@@ -4,12 +4,14 @@ using System.Text;
 
 namespace TETRIS
 {
-    public class Board
+    public class Board      //klasa opisująca parametry i działanie pola gry
     {
         private int width;
         private int height;
         private int[,] gameBoard;
 
+
+        //gettery i settery
         public int Width
         {
             get
@@ -65,11 +67,13 @@ namespace TETRIS
                         gameBoard[i, j] = 1;
                     }
                 }
+                // inicjalizacja scian i pola gry
             }
         }
 
         public void Draw()
         {
+            //metoda sluząca do wyswietlania pola gry wraz z zapisaną zawartością
             Console.SetCursorPosition(0, 0);
             for (int i = 0; i < height; i++)
             {
@@ -79,7 +83,7 @@ namespace TETRIS
                     {
                         case 0:
                             {
-                                Console.BackgroundColor = ConsoleColor.Gray;
+                                Console.BackgroundColor = ConsoleColor.DarkGray;
                                 Console.Write("  ");
                                 Console.BackgroundColor = ConsoleColor.Black;
                                 break;
@@ -91,17 +95,64 @@ namespace TETRIS
                                 Console.BackgroundColor = ConsoleColor.Black;
                                 break;
                             }
+                        case 2:
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkRed;
+                                Console.Write("  ");
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            }
+                        case 3:
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkGreen;
+                                Console.Write("  ");
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            }
+                        case 4:
+                            {
+                                Console.BackgroundColor = ConsoleColor.Cyan;
+                                Console.Write("  ");
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            }
+                        case 5:
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                                Console.Write("  ");
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            }
+                        case 6:
+                            {
+                                Console.BackgroundColor = ConsoleColor.Yellow;
+                                Console.Write("  ");
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            }
+                        case 7:
+                            {
+                                Console.BackgroundColor = ConsoleColor.Green;
+                                Console.Write("  ");
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            }
                     }
                 }
                 Console.Write("\n");
             }
         }
+        
+
+        //pomocnicza metoda do nadpisywania tablicy
         public void Override(int y, int x, int value)
         {
             gameBoard[y, x] = value;
         }
 
-        public void RemoveLines()
+
+        //metoda sprawdzająca czy nie ułożono linii z klocków, usuwająca ową linię, przenosząca elementy wyżej w dół i wywołująca dodanie punktów
+        public void RemoveLines(Game Game)
         {
             int elementsInLine;
             for (int i = 0; i < height - 1; i++)
@@ -130,9 +181,22 @@ namespace TETRIS
                             gameBoard[l, m] = gameBoard[l - 1, m];
                         }
                     }
+                    Game.Score = Game.Difficulty*Game.Difficulty;
                 }
             }
+        }
 
+
+        //nadpisanie calej tablicy specjalną tablicą po zakonczeniu rozgrywki
+        public void FailBoard()
+        {
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    Override(i,j,2);
+                }
+            }
         }
     }
 }

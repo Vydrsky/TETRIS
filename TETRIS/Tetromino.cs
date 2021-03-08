@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TETRIS
 {
-    public abstract class Tetromino
+    public abstract class Tetromino     //abstrakcyjna klasa opisująca każda możliwą funkcjonalność bloczka oprócz jego kształtu
     {
         protected int posX;
         protected int posY;
@@ -12,7 +12,9 @@ namespace TETRIS
         protected int height;
         protected int[,] blockArray;
         protected int color;
+        
 
+        //gettery i settery
         public int Width 
         {
             get
@@ -78,7 +80,7 @@ namespace TETRIS
             set
             {
                 Random Rnd = new Random((int)DateTime.Now.Ticks);
-                color = Rnd.Next(0, 1);
+                color = Rnd.Next(2, 8);
             }
         }
         public Tetromino(int x,int y)
@@ -87,6 +89,7 @@ namespace TETRIS
             PosY = y;
         }
 
+        //metoda służąca do wyświetlania bloczka
         public void Draw()
         {
             for (int i = 0; i < height; i++)
@@ -96,14 +99,60 @@ namespace TETRIS
                     if (blockArray[i, j] != 0)
                     {
                         Console.SetCursorPosition(j*2 + posX, i + posY);
-                        Console.BackgroundColor = ConsoleColor.Red;
-                        Console.Write("  ");
-                        Console.BackgroundColor = ConsoleColor.Black;
+                        switch (blockArray[i, j])
+                        {
+                            case 2:
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                                    Console.Write("  ");
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                                    Console.Write("  ");
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    break;
+                                }
+                            case 4:
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Cyan;
+                                    Console.Write("  ");
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    break;
+                                }
+                            case 5:
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                                    Console.Write("  ");
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    break;
+                                }
+                            case 6:
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Yellow;
+                                    Console.Write("  ");
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    break;
+                                }
+                            case 7:
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Green;
+                                    Console.Write("  ");
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    break;
+                                }
+                            
+                        }
                     }
                 }
                 Console.Write("\n");
             }
         }
+
+
+        //Metody sprawdzające różne wersje kolizji
         public bool BottomCollision(Board Board)
         {
             int[,] boardCopy = Board.GameBoard;
@@ -182,7 +231,9 @@ namespace TETRIS
             return false;
         }
 
-        public void Move(ConsoleKey Key, Board Board)
+
+        //metoda służąca do przemieszczania bloczka pod wpływem inputu od strony użytkownika
+        public void Move(ConsoleKey Key, Board Board,Game Game)
         {
             if (Key == ConsoleKey.LeftArrow && !LeftCollision(Board))
             {
@@ -198,9 +249,10 @@ namespace TETRIS
             }
             if (Key == ConsoleKey.DownArrow)
             {
-                
+                Game.Delay = 50;
             }
         }
+
         public void MoveDown(Board Board)
         {
             if (!BottomCollision(Board))
@@ -208,6 +260,8 @@ namespace TETRIS
                 PosY++;
             }
         }
+
+        //Metoda służąca do nadpisywania pola gry bloczkiem który wylądował
         public void SaveBlock(Board Board)
         {
             for (int i = 0; i < height; i++)
@@ -222,12 +276,15 @@ namespace TETRIS
             }
         }
 
-        public void ReturnToStart()
+        //metoda powracająca bloczek na pozycje startową
+        public void ReturnToStart(Board Board)
         {
-            PosX = 6;       //HARDCODE
-            PosY = 0;       //HARDCODE
+            PosX = (Board.Width/2)-2;      
+            PosY = 0;
         }
 
+
+        //metoda obracająca tablicę bloczka, odpowiednio zmieniająca sposób indexowania
         public void Rotate(Board Board)
         {
             int[,] temp = new int[height, width];
@@ -248,7 +305,7 @@ namespace TETRIS
                     blockArray[i, j] = temp[i, j];
                 }
             }
-            while (InternalCollision(Board))
+            while (InternalCollision(Board))        //zabezpieczenie przed nieprawidłowym obrotem, bloczek obraca się rekurencyjnie aż nie znajdzie pozycji, lub nie wróci na orgyinalną pozycje
             {
                 Rotate(Board);
             }
@@ -256,6 +313,8 @@ namespace TETRIS
 
     }
 
+
+    //Klasy potomne, opisują one dokładną formę bloczka, dziedziczą wszystkie cechy z klasy Tetromino
     public class TShape : Tetromino
     {
         public TShape(int x,int y,int c) : base(x, y)
@@ -320,7 +379,7 @@ namespace TETRIS
                                          { 0,color,0,0}};
         }
 
-        public override bool InternalCollision(Board Board)
+        public override bool InternalCollision(Board Board)     //Ze względu na większą tablice 4x4, aby uniknąć ujemnych indexów, metoda jest nadpisana
         {
             int[,] boardCopy = Board.GameBoard;
 

@@ -7,11 +7,18 @@ namespace TETRIS
     {
         static void Main()
         {
-            ConsoleKeyInfo Key = new ConsoleKeyInfo();
-            Console.CursorVisible = false;                      //deklaracje obiektów uzywanych w grze
-            Board GameBoard = new Board(10, 22);
-            Game Game = new Game(500);
+            Console.SetWindowSize(Console.LargestWindowWidth / 3, Console.LargestWindowHeight/2);
+            Console.CursorVisible = false;
+
+            //deklaracje obiektów uzywanych w grze
+            ConsoleKeyInfo Key = new ConsoleKeyInfo();          
+
+            Board GameBoard = new Board(12, 24);    //(SZEROKOSC,WYSOKOSC) kształt pola jest modularny
+            
+            Game Game = new Game(500);          //(OPOZNIENIE STARTOWE), 500 zalecane
+
             Random Rand = new Random((int)DateTime.Now.Ticks);
+
             Tetromino Block;
 
 
